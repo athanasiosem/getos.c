@@ -1,6 +1,4 @@
 # getos.c
-getos.c
-
 Athanasios Emmanouilidis - 2022
 
 Tries to guess the operating system of the IP given using the TTL reply of ping.
