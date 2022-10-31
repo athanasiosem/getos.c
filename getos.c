@@ -32,8 +32,8 @@ int main(int argc, char* argv[])
 
     printf("Script is running. Please wait for results.\n");
 
-    enum os { Windows, UnixLinux, SolarisAIXCisco, Unknown };
-    const char *operatingSystemNames[] = { "Windows", "Unix/Linux", "Solaris/AIX/Cisco", "Unknown" };
+    enum os { Windows, Windows9598ME, UnixLinux, SolarisAIXCisco, Unknown };
+    const char *operatingSystemNames[] = { "Windows", "Windows 95/98/ME","Unix/Linux", "Solaris/AIX/Cisco", "Unknown" };
     
     char tracerouteCommand[200];
     char pingCommand[200];
@@ -68,7 +68,8 @@ int main(int argc, char* argv[])
 
     int finalTtl = tracerouteTtlInteger + ttlInteger;
 
-    if (finalTtl == 64) operatingSystem = UnixLinux;
+    if (finalTtl == 32) operatingSystem = Windows9598ME;
+    else if (finalTtl == 64) operatingSystem = UnixLinux;
     else if (finalTtl == 128) operatingSystem = Windows;
     else if (finalTtl == 255) operatingSystem = SolarisAIXCisco;
     else operatingSystem = Unknown;
