@@ -11,9 +11,18 @@
 int main(int argc, char* argv[])
 {
 
+    printf("            _                  \n");
+    printf("           | |                 \n");
+    printf("  __ _  ___| |_ ___  ___   ___ \n");
+    printf(" / _` |/ _ \\ __/ _ \\/ __| / __|\n");
+    printf("| (_| |  __/ || (_) \\__ \\| (__ \n");
+    printf(" \\__, |\\___|\\__\\___/|___(_)___|\n");
+    printf("  __/ |                        \n");
+    printf(" |___/                         \n");
+    printf("-=== getos.c by Athanasios Emmanouilidis ===-\n\n");
+
     if (argc == 1) 
     {
-        printf("-=== getos.c by Athanasios Emmanouilidis ===-\n\n");
         printf("Tries to guess the operating system of the IP given using the TTL reply of ping.\n");
         printf("The results are valid only if default TTL value has not been changed.\n\n");
         printf("Use at your own risk. ");
@@ -21,8 +30,10 @@ int main(int argc, char* argv[])
         return 0;
     }
 
-    enum os { Windows, Linux, Unknown };
-    const char *operatingSystemNames[] = { "Windows", "Linux", "Unknown" };
+    printf("Script is running. Please wait for results.\n");
+
+    enum os { Windows, UnixLinux, SolarisAIXCisco, Unknown };
+    const char *operatingSystemNames[] = { "Windows", "Unix/Linux", "Solaris/AIX/Cisco", "Unknown" };
     
     char tracerouteCommand[200];
     char pingCommand[200];
@@ -57,14 +68,15 @@ int main(int argc, char* argv[])
 
     int finalTtl = tracerouteTtlInteger + ttlInteger;
 
-    if (finalTtl == 64) operatingSystem = Linux;
+    if (finalTtl == 64) operatingSystem = UnixLinux;
     else if (finalTtl == 128) operatingSystem = Windows;
+    else if (finalTtl == 255) operatingSystem = SolarisAIXCisco;
     else operatingSystem = Unknown;
 
     int rValue = strcmp(ttl,"");
 
     if (rValue != 0)
-        printf("TTL=%i. This machine is probably running %s.\n", finalTtl, operatingSystem[operatingSystemNames]);
+        printf("Script finished. TTL=%i. %s is probably running %s.\n", finalTtl, argv[1], operatingSystem[operatingSystemNames]);
     else
         printf("Some error happened.\n");
 
