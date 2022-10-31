@@ -1,5 +1,5 @@
 // getos.c
-// Athanasios Emmanouilidis - 2022
+// Athanasios Emmanouilidis - 2022 - MIT License
 // Tries to guess the operating system of the IP given using the TTL reply of ping.
 // Requires ping and traceroute installed.
 // The results are valid only if default TTL value has not been changed.
