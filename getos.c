@@ -14,7 +14,7 @@ int main(int argc, char* argv[])
         printf("-=== getos.c by Athanasios Emmanouilidis ===-\n");
         printf("Tries to guess the operating system of the IP given using the TTL reply of ping.\n");
         printf("Run it like this: ./getos www.google.com\n");
-        return 1;
+        return 0;
     }
 
     enum os { Windows, Linux, Unknown };
