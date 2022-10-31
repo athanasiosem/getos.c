@@ -1,6 +1,7 @@
 // getos.c
-// Athanasios Emmanouilidis - 2022 - MIT License
+// Athanasios Emmanouilidis - 2022
 // Tries to guess the operating system of the IP given using the TTL reply of ping.
+// Requires ping and traceroute installed.
 // The results are valid only if default TTL value has not been changed.
 // Use at your own risk.
 
@@ -25,6 +26,7 @@ int main(int argc, char* argv[])
     {
         printf("Tries to guess the operating system of the IP given using the TTL reply of ping.\n");
         printf("The results are valid only if default TTL value has not been changed.\n\n");
+        printf("Requires ping and traceroute installed.\n");
         printf("Use at your own risk. ");
         printf("Run it like this: ./getos www.google.com\n");
         return 0;
@@ -32,8 +34,8 @@ int main(int argc, char* argv[])
 
     printf("Script is running. Please wait for results.\n");
 
-    enum os { Windows, Windows9598ME, UnixLinux, SolarisAIXCisco, Unknown };
-    const char *operatingSystemNames[] = { "Windows", "Windows 95/98/ME","Unix/Linux", "Solaris/AIX/Cisco", "Unknown" };
+    enum os { Windows_Vista_7_Server2008_10_11, Windows_95_98_ME, Unix_Linux_FreeBSD_MacOSX, Solaris_AIX_Cisco, Unknown };
+    const char *operatingSystemNames[] = { "Windows Vista / Windows 7 / Windows Server 2008 / Windows 10 / Windows 11", "Windows 95 / Windows 98 / Windows ME","Unix / Linux / FreeBSD / MacOSX", "Solaris / AIX / Cisco", "Unknown" };
     
     char tracerouteCommand[200];
     char pingCommand[200];
@@ -68,10 +70,10 @@ int main(int argc, char* argv[])
 
     int finalTtl = tracerouteTtlInteger + ttlInteger;
 
-    if (finalTtl == 32) operatingSystem = Windows9598ME;
-    else if (finalTtl == 64) operatingSystem = UnixLinux;
-    else if (finalTtl == 128) operatingSystem = Windows;
-    else if (finalTtl == 255) operatingSystem = SolarisAIXCisco;
+    if (finalTtl == 32) operatingSystem = Windows_95_98_ME;
+    else if (finalTtl == 64) operatingSystem = Unix_Linux_FreeBSD_MacOSX;
+    else if (finalTtl == 128) operatingSystem = Windows_Vista_7_Server2008_10_11;
+    else if (finalTtl == 255) operatingSystem = Solaris_AIX_Cisco;
     else operatingSystem = Unknown;
 
     int rValue = strcmp(ttl,"");
