@@ -24,35 +24,52 @@ int main(int argc, char* argv[])
     enum os { Windows, Linux, Unknown };
     const char *operatingSystemNames[] = { "Windows", "Linux", "Unknown" };
     
+    char tracerouteCommand[200];
     char pingCommand[200];
+    char tracerouteTtl[4];
     char ttl[4];
         
+    snprintf(tracerouteCommand, sizeof(tracerouteCommand), "%s%s%s", "traceroute ", argv[1], " | tail -1 | awk '{print $1}' ");
     snprintf(pingCommand, sizeof(pingCommand), "%s%s%s", "ping -c1 ", argv[1], " | grep ttl | sed 's/.*ttl=\\([[:digit:]]*\\).*/\\1/' ");
 
     enum os operatingSystem;
 
-    FILE *cmd;
-    if (NULL == (cmd = popen(pingCommand, "r"))) {
+    FILE *traceroutecmd;
+    if (NULL == (traceroutecmd = popen(tracerouteCommand, "r"))) {
         perror("popen");
         exit(EXIT_FAILURE);
     }
 
-    fgets(ttl, 4, cmd);
+    fgets(tracerouteTtl, 4, traceroutecmd);
 
+    FILE *pingcmd;
+    if (NULL == (pingcmd = popen(pingCommand, "r"))) {
+        perror("popen");
+        exit(EXIT_FAILURE);
+    }
+
+    fgets(ttl, 4, pingcmd);
+
+    int tracerouteTtlInteger = atoi(tracerouteTtl);
     int ttlInteger = atoi(ttl);
 
-    if (ttlInteger == 64) operatingSystem = Linux;
-    else if (ttlInteger == 128) operatingSystem = Windows;
+    tracerouteTtlInteger = tracerouteTtlInteger - 1;
+
+    int finalTtl = tracerouteTtlInteger + ttlInteger;
+
+    if (finalTtl == 64) operatingSystem = Linux;
+    else if (finalTtl == 128) operatingSystem = Windows;
     else operatingSystem = Unknown;
 
     int rValue = strcmp(ttl,"");
 
     if (rValue != 0)
-        printf("TTL=%i. This machine is probably running %s.\n", ttlInteger, operatingSystem[operatingSystemNames]);
+        printf("TTL=%i. This machine is probably running %s.\n", finalTtl, operatingSystem[operatingSystemNames]);
     else
         printf("Some error happened.\n");
 
-    pclose(cmd);
+    pclose(traceroutecmd);
+    pclose(pingcmd);
 
     return 0;
 }
