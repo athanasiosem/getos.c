@@ -5,7 +5,7 @@
   </a>
 </h1>
 
-<h4 align="center">Script that fingerprints the Operating System of a remote host using the default TTL reply of ping.</h4>
+<h4 align="center">Active OS fingerprinting tool. Tries to guess OS by using the default TTL reply of ping.</h4>
 
 
 <p align="center">
