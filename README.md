@@ -38,7 +38,7 @@ gcc getos.c -o getos
 You can run getos.c by running the following command:
 
 ```sh
-getos www.example.com
+./getos www.example.com
 ```
 
 <div align="center">
