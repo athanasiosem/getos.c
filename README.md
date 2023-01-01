@@ -11,7 +11,6 @@
 <p align="center">
 <a href="https://github.com/athanasiosem/getos.c/blob/main/LICENSE"><img src="https://img.shields.io/badge/License-MIT-red.svg"></a>
 <a href="https://github.com/athanasiosem/getos.c/issues"><img src="https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat"></a>
-<a href="https://github.com/athanasiosem/getos.c/releases"><img src="https://img.shields.io/github/release/projectdiscovery/getos.c"></a>
 </p>
 
 <p align="center">
