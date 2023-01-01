@@ -10,11 +10,9 @@
 <img src="images/screenshot.png" alt="getos.c screenshot"></a>
 
 <p align="center">
-<a href="https://github.com/athanasiosem/getos.c/releases"><img src="https://img.shields.io/github/downloads/athanasiosem/getos.c/total">
 <a href="https://github.com/athanasiosem/getos.c/blob/main/LICENSE"><img src="https://img.shields.io/badge/License-MIT-red.svg"></a>
 <a href="https://github.com/athanasiosem/getos.c/issues"><img src="https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat"></a>
 <a href="https://github.com/athanasiosem/getos.c/releases"><img src="https://img.shields.io/github/release/athanasiosem/getos.c">
-
 </p>
 
 <p align="center">
