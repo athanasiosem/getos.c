@@ -1,13 +1,67 @@
 // getos.c
-// Athanasios Emmanouilidis - 2022 - MIT License
 // Tries to fingerprint the operating system of a remote host using the TTL reply of ping.
 // Requires ping and traceroute installed.
 // The results are valid only if default TTL value has not been changed.
+// Athanasios Emmanouilidis - 2022 - MIT License. Code to find closest element by Smitha Dinesh Semwal.
 // Use at your own risk.
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+ 
+int getClosest(int val1, int val2, int target)
+{
+    if (target - val1 >= val2 - target)
+        return val2;
+    else
+        return val1;
+}
+
+// Returns element closest to target in arr[]
+int findClosest(int arr[], int n, int target)
+{
+    // Corner cases
+    //left-side case
+    if (target <= arr[0])
+        return arr[0];
+    //right-side case
+    if (target >= arr[n - 1])
+        return arr[n - 1];
+ 
+    // Doing binary search
+    int i = 0, j = n, mid = 0;
+    while (i < j) {
+        mid = (i + j) / 2;
+ 
+        if (arr[mid] == target)
+            return arr[mid];
+ 
+        /* If target is less than array element,
+            then search in left */
+        if (target < arr[mid]) {
+ 
+            // If target is greater than previous
+            // to mid, return closest of two
+            if (mid > 0 && target > arr[mid - 1])
+                return getClosest(arr[mid - 1],
+                                  arr[mid], target);  
+            j = mid;
+        }
+        /* Repeat for left half */
+ 
+        // If target is greater than mid
+        else {
+            if (mid < n - 1 && target < arr[mid + 1])
+                return getClosest(arr[mid],
+                                  arr[mid + 1], target);
+            // update i
+            i = mid + 1;
+        }
+    }
+ 
+    // Only single element left after search
+    return arr[mid];
+}
 
 int main(int argc, char* argv[])
 {
@@ -34,9 +88,10 @@ int main(int argc, char* argv[])
 
     printf("Script is running. Please wait for results.\n");
 
-    enum os { Windows_Vista_7_Server2008_10_11, Windows_95_98_ME, Unix_Linux_FreeBSD_MacOSX, Solaris_AIX_Cisco, Unknown };
-    const char *operatingSystemNames[] = { "Windows Vista / Windows 7 / Windows Server 2008 / Windows 10 / Windows 11", "Windows 95 / Windows 98 / Windows ME","Unix / Linux / FreeBSD / MacOSX", "Solaris / AIX / Cisco", "Unknown" };
-    
+    enum os { Windows_Vista_7_Server2008_10_11, Windows_95_98_ME, Unix_Linux_FreeBSD_MacOSX, Solaris_AIX_Cisco };
+    const char *operatingSystemNames[] = { "Windows Vista / Windows 7 / Windows Server 2008 / Windows 10 / Windows 11", "Windows 95 / Windows 98 / Windows ME","Unix / Linux / FreeBSD / MacOSX", "Solaris / AIX / Cisco" };
+    int ttlValuesArray[] = {32, 64, 128, 255};
+
     char tracerouteCommand[200];
     char pingCommand[200];
     char tracerouteTtl[4];
@@ -70,18 +125,19 @@ int main(int argc, char* argv[])
 
     int finalTtl = tracerouteTtlInteger + ttlInteger;
 
-    if (finalTtl == 32) operatingSystem = Windows_95_98_ME;
-    else if (finalTtl == 64) operatingSystem = Unix_Linux_FreeBSD_MacOSX;
-    else if (finalTtl == 128) operatingSystem = Windows_Vista_7_Server2008_10_11;
-    else if (finalTtl == 255) operatingSystem = Solaris_AIX_Cisco;
-    else operatingSystem = Unknown;
+    int closestTtl = (findClosest(ttlValuesArray,sizeof(ttlValuesArray)/sizeof(ttlValuesArray[0]), finalTtl));
+
+    if (closestTtl == 32) operatingSystem = Windows_95_98_ME;
+    else if (closestTtl == 64) operatingSystem = Unix_Linux_FreeBSD_MacOSX;
+    else if (closestTtl == 128) operatingSystem = Windows_Vista_7_Server2008_10_11;
+    else if (closestTtl == 255) operatingSystem = Solaris_AIX_Cisco;
 
     int rValue = strcmp(ttl,"");
 
     if (rValue != 0)
         printf("Script finished. TTL=%i. %s is probably running %s.\n", finalTtl, argv[1], operatingSystem[operatingSystemNames]);
     else
-        printf("Some error happened.\n");
+        printf("An error occured. The machine is probably blocking our pings.\n");
 
     pclose(traceroutecmd);
     pclose(pingcmd);
