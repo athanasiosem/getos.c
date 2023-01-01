@@ -2,7 +2,7 @@
 // Tries to fingerprint the operating system of a remote host using the TTL reply of ping.
 // Requires ping and traceroute installed.
 // The results are valid only if default TTL value has not been changed.
-// Athanasios Emmanouilidis - 2022 - MIT License. Code to find closest element by Smitha Dinesh Semwal.
+// Athanasios Emmanouilidis - 2023 - MIT License. Code to find closest element by Smitha Dinesh Semwal.
 // Use at your own risk.
 
 #include <stdio.h>
