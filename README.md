@@ -7,6 +7,7 @@
 
 <h4 align="center">OS fingerprinting tool. Tries to guess OS by using the default TTL reply of ping.</h4>
 
+<img src="images/screenshot.png" alt="getos.c screenshot"></a>
 
 <p align="center">
 <a href="https://github.com/athanasiosem/getos.c/blob/main/LICENSE"><img src="https://img.shields.io/badge/License-MIT-red.svg"></a>
