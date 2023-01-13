@@ -91,43 +91,9 @@ int findClosest(int arr[], int n, int target)
 
 int get_ping_ttl(char *host)
 {
-int fd[2];
-pid_t pid;
-char pingTtl[4];
-char pingCommand[200];
-
-if (pipe(fd) == -1) {
-    perror("pipe");
-    exit(EXIT_FAILURE);
-}
-
-if ((pid = fork()) == -1) {
-    perror("fork");
-    exit(EXIT_FAILURE);
-}
-
-if (pid == 0) {
-    // child process
-    close(fd[0]);    // close the read end of the pipe
-    dup2(fd[1], 1);  // redirect stdout to write end of the pipe
-    snprintf(pingCommand, sizeof(pingCommand), "%s%s%s", "ping -c1 ", host, " | grep ttl | sed 's/.*ttl=\\([[:digit:]]*\\).*/\\1/' ");
-    execl("/bin/sh", "sh", "-c", pingCommand, (char *)NULL);
-} else {
-    // parent process
-    close(fd[1]);    // close the write end of the pipe
-    read(fd[0], pingTtl, 4);
-    close(fd[0]);
-    wait(NULL);
-}
-
-return atoi(pingTtl);
-}
-
-int get_ping_ttl_old(char *host)
-{
     char pingTtl[4];
     char pingCommand[200];
-    
+
     snprintf(pingCommand, sizeof(pingCommand), "%s%s%s", "ping -c1 ", host, " | grep ttl | sed 's/.*ttl=\\([[:digit:]]*\\).*/\\1/' ");
 
     FILE *pingcmd;
@@ -160,7 +126,7 @@ int get_traceroute_ttl(char *host)
     fgets(tracerouteTtl, 4, traceroutecmd);
     pclose(traceroutecmd);
 
-    return atoi(tracerouteTtl -1);
+    return atoi(tracerouteTtl - 1);
 }
 
 int main(int argc, char *argv[])
@@ -188,7 +154,7 @@ int main(int argc, char *argv[])
         Windows_95_98_ME,
         Unix_Linux_FreeBSD_MacOSX,
         Solaris_AIX_Cisco
-    }; 
+    };
 
     enum os operatingSystem;
 
