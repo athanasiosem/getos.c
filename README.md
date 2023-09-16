@@ -5,7 +5,7 @@
   </a>
 </h1>
 
-<h4 align="center">OS fingerprinting tool. Tries to guess OS by using the default TTL reply of ping.</h4>
+<h4 align="center">Open Source OS fingerprinting tool. Tries to guess OS by using the default TTL reply of ping.</h4>
 
 <img src="images/screenshot.png" alt="getos.c screenshot"></a>
 
@@ -23,7 +23,7 @@
 
 # Features
 
-getos.c is a script that tries to fingerprint the operating system of a remote host using the default TTL reply of ping.
+getos.c is an Open Source script that tries to fingerprint the operating system of a remote host using the default TTL reply of ping.
 The results are valid only if default TTL value has not been changed. Use at your own risk.
 
 # Installation
