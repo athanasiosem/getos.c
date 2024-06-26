@@ -43,5 +43,5 @@ You can run getos.c by running the following command:
 ```
 
 <div align="center">
-Athanasios Emmanouilidis - 2023 - MIT License
+Athanasios Emmanouilidis - MIT License
 </div>
