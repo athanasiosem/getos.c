@@ -125,9 +125,13 @@ int findClosest(int arr[], int n, int target)
 int get_ping_ttl(char *host)
 {
     char pingTtl[4];
-    char pingCommand[200];
+    char pingCommand[320];
 
-    snprintf(pingCommand, sizeof(pingCommand), "%s%s%s", "ping -c1 ", host, " | grep ttl | sed 's/.*ttl=\\([[:digit:]]*\\).*/\\1/' ");
+    if (snprintf(pingCommand, sizeof(pingCommand), "%s%s%s", "ping -c1 ", host, " | grep ttl | sed 's/.*ttl=\\([[:digit:]]*\\).*/\\1/' ") >= (int)sizeof(pingCommand))
+    {
+        fprintf(stderr, "Error: host name too long.\n");
+        exit(EXIT_FAILURE);
+    }
 
     FILE *pingcmd;
     if (NULL == (pingcmd = popen(pingCommand, "r")))
@@ -136,7 +140,11 @@ int get_ping_ttl(char *host)
         exit(EXIT_FAILURE);
     }
 
-    fgets(pingTtl, 4, pingcmd);
+    if (fgets(pingTtl, 4, pingcmd) == NULL)
+    {
+        pclose(pingcmd);
+        return 0;
+    }
     pclose(pingcmd);
 
     return atoi(pingTtl);
@@ -145,9 +153,13 @@ int get_ping_ttl(char *host)
 int get_traceroute_ttl(char *host)
 {
     char tracerouteTtl[4];
-    char tracerouteCommand[200];
+    char tracerouteCommand[320];
 
-    snprintf(tracerouteCommand, sizeof(tracerouteCommand), "%s%s%s", "traceroute ", host, " | tail -1 | awk '{print $1}' ");
+    if (snprintf(tracerouteCommand, sizeof(tracerouteCommand), "%s%s%s", "traceroute ", host, " | tail -1 | awk '{print $1}' ") >= (int)sizeof(tracerouteCommand))
+    {
+        fprintf(stderr, "Error: host name too long.\n");
+        exit(EXIT_FAILURE);
+    }
 
     FILE *traceroutecmd;
     if (NULL == (traceroutecmd = popen(tracerouteCommand, "r")))
@@ -156,12 +168,25 @@ int get_traceroute_ttl(char *host)
         exit(EXIT_FAILURE);
     }
 
-    fgets(tracerouteTtl, 4, traceroutecmd);
+    if (fgets(tracerouteTtl, 4, traceroutecmd) == NULL)
+    {
+        pclose(traceroutecmd);
+        return 0;
+    }
     pclose(traceroutecmd);
 
     return atoi(tracerouteTtl) - 1;
 }
 
+enum os
+{
+    Windows_Vista_7_Server2008_10_11,
+    Windows_95_98_ME,
+    Unix_Linux_FreeBSD_MacOSX,
+    Solaris_AIX_Cisco
+};
+
+#ifndef TESTING
 int main(int argc, char *argv[])
 {
 
@@ -187,15 +212,7 @@ int main(int argc, char *argv[])
 
     printf("Script is running. Please wait for results.\n");
 
-    enum os
-    {
-        Windows_Vista_7_Server2008_10_11,
-        Windows_95_98_ME,
-        Unix_Linux_FreeBSD_MacOSX,
-        Solaris_AIX_Cisco
-    };
-
-    enum os operatingSystem;
+    enum os operatingSystem = Unix_Linux_FreeBSD_MacOSX;
 
     const char *operatingSystemNames[] = {"Windows Vista / Windows 7 / Windows Server 2008 / Windows 10 / Windows 11", "Windows 95 / Windows 98 / Windows ME", "Unix / Linux / FreeBSD / MacOSX", "Solaris / AIX / Cisco"};
     int ttlValuesArray[] = {32, 64, 128, 255};
@@ -215,9 +232,13 @@ int main(int argc, char *argv[])
         operatingSystem = Solaris_AIX_Cisco;
 
     if (pingTtl != 0)
-        printf("Script finished. TTL=%i. %s is probably running %s.\n", finalTtl, argv[1], operatingSystem[operatingSystemNames]);
+    {
+        printf("Observed TTL: %i  Hops: %i  Reconstructed TTL: %i\n", pingTtl, tracerouteTtl, finalTtl);
+        printf("Script finished. %s is probably running %s.\n", argv[1], operatingSystemNames[operatingSystem]);
+    }
     else
-        printf("An error occured. The machine is probably blocking our pings.\n");
+        printf("An error occurred. The machine is probably blocking our pings.\n");
 
     return 0;
 }
+#endif /* TESTING */
