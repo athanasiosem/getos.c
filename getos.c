@@ -9,6 +9,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h> // for access()
+#include <ctype.h>
 
 void print_usage_instructions()
 {
@@ -30,6 +31,38 @@ void print_ascii_art()
     printf("  __/ |                        \n");
     printf(" |___/                         \n");
     printf("-=== getos.c by Athanasios Emmanouilidis ===-\n\n");
+}
+
+int find_executable(const char *name)
+{
+    const char *path_env = getenv("PATH");
+    if (path_env == NULL)
+        return 0;
+
+    char path_copy[4096];
+    strncpy(path_copy, path_env, sizeof(path_copy) - 1);
+    path_copy[sizeof(path_copy) - 1] = '\0';
+
+    char candidate[4096];
+    char *dir = strtok(path_copy, ":");
+    while (dir != NULL)
+    {
+        snprintf(candidate, sizeof(candidate), "%s/%s", dir, name);
+        if (access(candidate, X_OK) == 0)
+            return 1;
+        dir = strtok(NULL, ":");
+    }
+    return 0;
+}
+
+int is_valid_host(const char *host)
+{
+    for (const char *p = host; *p != '\0'; p++)
+    {
+        if (!isalnum((unsigned char)*p) && *p != '.' && *p != '-' && *p != ':' && *p != '_')
+            return 0;
+    }
+    return 1;
 }
 
 int getClosest(int val1, int val2, int target)
@@ -126,13 +159,13 @@ int get_traceroute_ttl(char *host)
     fgets(tracerouteTtl, 4, traceroutecmd);
     pclose(traceroutecmd);
 
-    return atoi(tracerouteTtl - 1);
+    return atoi(tracerouteTtl) - 1;
 }
 
 int main(int argc, char *argv[])
 {
 
-    if (access("/bin/ping", F_OK) == -1 || access("/usr/sbin/traceroute", F_OK) == -1)
+    if (!find_executable("ping") || !find_executable("traceroute"))
     {
         printf("Error: ping or traceroute not found. Please ensure that these dependencies are installed.\n");
         return 1;
@@ -144,6 +177,12 @@ int main(int argc, char *argv[])
     {
         print_usage_instructions();
         return 0;
+    }
+
+    if (!is_valid_host(argv[1]))
+    {
+        printf("Error: invalid host '%s'. Only alphanumeric characters, '.', '-', ':', and '_' are allowed.\n", argv[1]);
+        return 1;
     }
 
     printf("Script is running. Please wait for results.\n");
