@@ -74,7 +74,7 @@ int getClosest(int val1, int val2, int target)
 }
 
 // Returns element closest to target in arr[]
-int findClosest(int arr[], int n, int target)
+int findClosest(const int arr[], int n, int target)
 {
     // Corner cases
     // left-side case
@@ -147,7 +147,11 @@ int get_ping_ttl(char *host)
     }
     pclose(pingcmd);
 
-    return atoi(pingTtl);
+    char *endptr;
+    long val = strtol(pingTtl, &endptr, 10);
+    if (endptr == pingTtl)
+        return 0;
+    return (int)val;
 }
 
 int get_traceroute_ttl(char *host)
@@ -175,7 +179,11 @@ int get_traceroute_ttl(char *host)
     }
     pclose(traceroutecmd);
 
-    return atoi(tracerouteTtl) - 1;
+    char *endptr;
+    long val = strtol(tracerouteTtl, &endptr, 10);
+    if (endptr == tracerouteTtl)
+        return 0;
+    return (int)val - 1;
 }
 
 enum os
@@ -185,6 +193,9 @@ enum os
     Unix_Linux_FreeBSD_MacOSX,
     Solaris_AIX_Cisco
 };
+
+static const char *operatingSystemNames[] = {"Windows Vista / Windows 7 / Windows Server 2008 / Windows 10 / Windows 11", "Windows 95 / Windows 98 / Windows ME", "Unix / Linux / FreeBSD / MacOSX", "Solaris / AIX / Cisco"};
+static const int ttlValuesArray[] = {32, 64, 128, 255};
 
 #ifndef TESTING
 int main(int argc, char *argv[])
@@ -213,9 +224,6 @@ int main(int argc, char *argv[])
     printf("Script is running. Please wait for results.\n");
 
     enum os operatingSystem = Unix_Linux_FreeBSD_MacOSX;
-
-    const char *operatingSystemNames[] = {"Windows Vista / Windows 7 / Windows Server 2008 / Windows 10 / Windows 11", "Windows 95 / Windows 98 / Windows ME", "Unix / Linux / FreeBSD / MacOSX", "Solaris / AIX / Cisco"};
-    int ttlValuesArray[] = {32, 64, 128, 255};
 
     int pingTtl = get_ping_ttl(argv[1]);
     int tracerouteTtl = get_traceroute_ttl(argv[1]);

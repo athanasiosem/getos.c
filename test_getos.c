@@ -66,7 +66,6 @@ static void test_findClosest(void)
     CHECK("above max clamps to 255",   findClosest(ttl_arr, ttl_n, 300) == 255);
     CHECK("63 rounds to 64",           findClosest(ttl_arr, ttl_n, 63)  == 64);
     CHECK("90 rounds to 64",           findClosest(ttl_arr, ttl_n, 90)  == 64);
-    CHECK("96 rounds to 128",          findClosest(ttl_arr, ttl_n, 96)  == 128);
     CHECK("200 rounds to 255",         findClosest(ttl_arr, ttl_n, 200) == 255);
     CHECK("midpoint 96 breaks to 128", findClosest(ttl_arr, ttl_n, 96)  == 128);
 }
